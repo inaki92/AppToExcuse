@@ -1,5 +1,7 @@
 package com.example.excuserappcat32.di
 
+import com.example.excuserappcat32.rest.ExcuseRepository
+import com.example.excuserappcat32.rest.ExcuseRepositoryImpl
 import com.example.excuserappcat32.rest.ExcuserApi
 import com.example.excuserappcat32.rest.MyRequestInterceptor
 import com.squareup.moshi.Moshi
@@ -7,6 +9,8 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -51,5 +55,12 @@ class NetworkModule {
             .client(okHttpClient)
             .build()
             .create(ExcuserApi::class.java)
+
+    @Provides
+    fun providesDispatcher(): CoroutineDispatcher =  Dispatchers.IO
+
+    @Provides
+    fun providesRepository(apiService: ExcuserApi): ExcuseRepository =
+        ExcuseRepositoryImpl(apiService)
 
 }

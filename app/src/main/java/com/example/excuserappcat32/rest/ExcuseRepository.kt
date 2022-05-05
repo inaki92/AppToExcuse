@@ -19,9 +19,16 @@ class ExcuseRepositoryImpl @Inject constructor(
         emit(UIState.LOADING)
 
         try {
-            val response = serverApi.getListRandomExcuseByCategory(request.limit, request.categorySent)
+            val response = serverApi.getListRandomExcuse(request.limit)
+            if(response.isSuccessful) {
+                response.body()?.let {
+                    emit(UIState.SUCCESS(it))
+                } ?: throw Exception("Error null response")
+            } else {
+                throw Exception("Failure null response")
+            }
         } catch (e: Exception) {
-
+            emit(UIState.ERROR(e))
         }
     }
 
